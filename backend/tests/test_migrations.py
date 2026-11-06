@@ -29,7 +29,7 @@ BACKEND_ROOT = Path(__file__).resolve().parent.parent
 def get_test_db_url():
     url = make_url(os.getenv(
         "TEST_DATABASE_URL",
-        "postgresql://langconfig:langconfig_dev@localhost:5433/langconfig_test"
+        "postgresql://langconfig:langconfig_dev@localhost:5432/langconfig_test"
     ))
     # The shared async fixtures use asyncpg; Alembic and this module are sync.
     if url.drivername == "postgresql+asyncpg":

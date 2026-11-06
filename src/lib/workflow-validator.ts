@@ -5,7 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Node, Edge } from 'reactflow';
+import type { Edge } from '@xyflow/react';
+import type { WorkflowNode } from '@/features/workflows/canvas/types';
 
 export interface ValidationError {
   type: 'error' | 'warning';
@@ -41,7 +42,7 @@ const requiresAgentConfig = (agentType?: string): boolean => {
  * Validates a workflow before saving or executing
  */
 export function validateWorkflow(
-  nodes: Node[],
+  nodes: WorkflowNode[],
   edges: Edge[]
 ): ValidationResult {
   const errors: ValidationError[] = [];
@@ -156,7 +157,7 @@ export function validateWorkflow(
 /**
  * Simple cycle detection using DFS
  */
-function detectCycle(nodes: Node[], edges: Edge[]): boolean {
+function detectCycle(nodes: WorkflowNode[], edges: Edge[]): boolean {
   const adjacency = new Map<string, string[]>();
 
   // Build adjacency list
@@ -199,7 +200,7 @@ function detectCycle(nodes: Node[], edges: Edge[]): boolean {
 /**
  * Get entry nodes (nodes with no incoming edges)
  */
-export function getEntryNodes(nodes: Node[], edges: Edge[]): Node[] {
+export function getEntryNodes(nodes: WorkflowNode[], edges: Edge[]): WorkflowNode[] {
   const targetIds = new Set(edges.map((e) => e.target));
   return nodes.filter((node) => !targetIds.has(node.id));
 }
@@ -207,7 +208,7 @@ export function getEntryNodes(nodes: Node[], edges: Edge[]): Node[] {
 /**
  * Get leaf nodes (nodes with no outgoing edges)
  */
-export function getLeafNodes(nodes: Node[], edges: Edge[]): Node[] {
+export function getLeafNodes(nodes: WorkflowNode[], edges: Edge[]): WorkflowNode[] {
   const sourceIds = new Set(edges.map((e) => e.source));
   return nodes.filter((node) => !sourceIds.has(node.id));
 }

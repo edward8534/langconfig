@@ -6,7 +6,8 @@
  */
 
 import { useCallback } from 'react';
-import { Node, Edge } from 'reactflow';
+import type { Edge } from '@xyflow/react';
+import type { WorkflowNode } from '../types';
 import apiClient from '@/lib/api-client';
 
 interface ExecutionStatus {
@@ -32,7 +33,7 @@ interface ExecutionConfig {
 }
 
 interface UseExecutionHandlersOptions {
-  nodes: Node[];
+  nodes: WorkflowNode[];
   edges: Edge[];
   currentWorkflowId: number | null;
   currentTaskId: number | null;
@@ -56,7 +57,7 @@ interface UseExecutionHandlersOptions {
   setExecutionStatus: React.Dispatch<React.SetStateAction<any>>;
   setShowExecutionDialog: (show: boolean) => void;
   setShowLiveExecutionPanel: (show: boolean) => void;
-  setNodes: React.Dispatch<React.SetStateAction<Node[]>>;
+  setNodes: React.Dispatch<React.SetStateAction<WorkflowNode[]>>;
   clearEvents: () => void;
   showWarning: (message: string) => void;
   logError: (title: string, message: string) => void;

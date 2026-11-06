@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { Node } from 'reactflow';
+import type { Node } from '@xyflow/react';
 import type { NodeExecutionStatus } from '@/hooks/useNodeExecutionStatus';
 
 /**
@@ -37,14 +37,20 @@ export interface Agent {
 /**
  * Node configuration stored in each workflow node
  */
-export interface NodeConfig {
+export interface NodeConfig extends Record<string, unknown> {
   model: string;
+  agentType?: string;
   fallback_models?: string[];
   temperature: number;
   max_tokens?: number;
   system_prompt: string;
   tools: string[];
   native_tools: string[];
+  nativeTools?: string[];
+  reasoning_effort?: string;
+  tool_type?: string | null;
+  tool_id?: string | null;
+  tool_params?: Record<string, unknown>;
   cli_tools?: string[];
   custom_tools?: string[];
   timeout_seconds: number;
@@ -78,12 +84,14 @@ export interface NodeConfig {
 /**
  * Data structure for workflow nodes
  */
-export interface NodeData {
+export interface NodeData extends Record<string, unknown> {
   label: string;
   agentType: string;
   model: string;
   config: NodeConfig;
+  icon?: string;
   executionStatus?: NodeExecutionStatus;
+  tokenCost?: NodeTokenCost;
 }
 
 /**

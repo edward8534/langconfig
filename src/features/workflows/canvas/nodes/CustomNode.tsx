@@ -6,18 +6,20 @@
  */
 
 import { memo, useState, useRef, useEffect, useMemo, useCallback } from 'react';
-import { Handle, Position, NodeProps } from 'reactflow';
+import { Handle, Position } from '@xyflow/react';
+import type { NodeProps } from '@xyflow/react';
 import { MessageSquare } from 'lucide-react';
 import { useAvailableModels } from '@/hooks/useAvailableModels';
 import { getModelDisplayName } from '@/lib/modelDisplayNames';
 import type { NodeExecutionStatus } from '@/hooks/useNodeExecutionStatus';
 import { useWorkflowCanvasContext } from '../context';
+import type { WorkflowNode } from '../types';
 
 /**
  * Custom Node Component with enhanced visuals and execution status
  * Memoized for performance during canvas operations
  */
-const CustomNode = memo(function CustomNode({ id, data, selected }: NodeProps) {
+const CustomNode = memo(function CustomNode({ id, data, selected }: NodeProps<WorkflowNode>) {
   // Always prefer data.config.model over data.model for display
   const modelName = data.config?.model || data.model;
   const agentType = data.agentType || 'default';

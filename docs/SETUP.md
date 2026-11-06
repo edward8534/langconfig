@@ -6,6 +6,7 @@ This is the canonical setup guide for a fresh clone or fork of LangConfig.
 
 - Git
 - Docker Desktop (or another Docker Engine with Compose v2)
+- uv
 - Python 3.11-3.13; Python 3.12 is the regularly tested version. Python 3.14 is not yet supported by the current LangChain/Pydantic dependency set.
 - Node.js `^20.19.0` or `>=22.12.0` and npm 10 or newer
 
@@ -14,6 +15,7 @@ Check the installed versions:
 ```bash
 git --version
 docker compose version
+uv --version
 python --version
 node --version
 npm --version
@@ -25,24 +27,13 @@ npm --version
 git clone https://github.com/LangConfig/langconfig.git
 cd langconfig
 
-# Create and activate an isolated Python environment.
-python -m venv .venv
-
-# macOS/Linux
-source .venv/bin/activate
-
-# Windows Git Bash (run this instead on Windows)
-source .venv/Scripts/activate
-
-# Windows PowerShell (run this instead on Windows)
-.venv\Scripts\Activate.ps1
-
-python -m pip install --upgrade pip
+# Create/sync the backend environment from backend/uv.lock.
+uv sync --project backend
 npm ci
-python backend/scripts/setup.py
+uv run --project backend python backend/scripts/setup.py
 ```
 
-The setup script installs current Python dependencies, starts PostgreSQL, creates
+The setup script re-syncs the locked Python dependencies, starts PostgreSQL, creates
 the current schema, stamps the current Alembic revision, and seeds starter data.
 It preserves an existing LangConfig database and runs forward migrations instead.
 
@@ -66,12 +57,12 @@ loaded from that file take precedence.
 
 ## Start development
 
-Use two terminals with the virtual environment active:
+Use two terminals with the uv-managed environment:
 
 ```bash
 # Terminal 1
 cd backend
-python main.py
+uv run python main.py
 
 # Terminal 2, from the repository root
 npm run dev
@@ -86,20 +77,40 @@ Open:
 The frontend uses Vite's `/api` proxy in development. Leave
 `VITE_API_BASE_URL` blank unless the API is hosted on a different origin.
 
+## Production API workers
+
+For a multi-worker API deployment, run the background services once and start
+the API pool in separate processes:
+
+```bash
+# Terminal 1: one instance for task consumers, schedules, and file watchers
+npm run start:background:worker
+
+# Terminal 2: six API workers, bound to 0.0.0.0:8000, max 100 concurrent requests
+npm run start:backend:production
+```
+
+The production API defaults can be overridden with `API_HOST`, `API_PORT`,
+`API_WORKERS`, and `API_LIMIT_CONCURRENCY`. Run database setup/migrations before
+starting either process. Keep exactly one background worker process; the API
+workers continue to own their process-local chat agent caches and PostgreSQL
+LangGraph checkpointers. The development command above remains single-process
+with reload enabled.
+
 ## Updating an existing clone
 
 ```bash
 git pull --ff-only
 npm ci
-python -m pip install --upgrade -r backend/requirements.txt
+uv sync --project backend --locked
 docker compose up -d postgres
 cd backend
-python -m alembic upgrade head
+uv run --locked python -m alembic upgrade head
 cd ..
 ```
 
 `alembic upgrade head` is for a database that already has a LangConfig schema.
-For a brand-new database, use `python backend/scripts/setup.py`; the repository's
+For a brand-new database, use `uv run --project backend python backend/scripts/setup.py`; the repository's
 historical baseline migration cannot bootstrap an empty PostgreSQL database.
 
 ## Optional features
@@ -107,7 +118,7 @@ historical baseline migration cannot bootstrap an empty PostgreSQL database.
 ### Browser tools
 
 ```bash
-python -m playwright install chromium
+uv run --project backend --locked python -m playwright install chromium
 ```
 
 ### Local Codex harness (experimental)
@@ -189,7 +200,7 @@ and test fixtures must target the same database.
 ```bash
 # Backend unit and integration tests, after configuring both database URLs
 cd backend
-python -m pytest -q --ignore=tests/test_playwright_tools.py
+uv run --locked python -m pytest -q --ignore=tests/test_playwright_tools.py
 
 # Frontend checks and focused Hermes browser regressions
 cd ..
@@ -223,8 +234,8 @@ Get-NetTCPConnection -LocalPort 1425,8780 -ErrorAction SilentlyContinue
 lsof -i :1425 -i :8780
 ```
 
-If Python dependencies conflict, confirm the virtual environment is active and
-recreate `.venv`; avoid repairing a shared global environment. If a migration
+If Python dependencies conflict, run `uv sync --project backend --locked`; avoid
+repairing a shared global environment. If a migration
 fails on an existing database, save the complete error and current revision from
 `python -m alembic current` before changing data. Do not use `alembic downgrade
 base` as a routine reset because it can destroy application data.

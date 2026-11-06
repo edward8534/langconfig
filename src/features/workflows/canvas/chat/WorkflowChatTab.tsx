@@ -6,7 +6,7 @@
  */
 
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { Node } from 'reactflow';
+import type { WorkflowNode } from '../types';
 import { Activity, Ban, Bot, ChevronDown, CornerDownRight, FileImage, Loader2, MessageSquare, PanelRightClose, PanelRightOpen, Play, RotateCcw, Send, Sparkles, Square, Trash2, Wrench } from 'lucide-react';
 import ContentBlockRenderer from '@/components/common/ContentBlockRenderer';
 import { Badge } from '@/components/ui/Badge';
@@ -37,7 +37,7 @@ interface WorkflowChatTabProps {
   workflowMetrics?: any;
   executionStatus: ExecutionStatus;
   currentTaskId: number | null;
-  nodes?: Node[];
+  nodes?: WorkflowNode[];
   nodeStatuses?: Record<string, NodeExecutionStatus>;
   preferredAgentId?: number | null;
   onSendPrompt: (prompt: string, continueFromTaskId?: number) => void;
@@ -143,18 +143,18 @@ function tokenFromEvent(event: WorkflowEvent): string {
   return event.data?.token || event.data?.content || '';
 }
 
-function nodeDisplayLabel(node: Node): string {
+function nodeDisplayLabel(node: WorkflowNode): string {
   return String(node.data?.label || node.data?.name || node.id || 'Node');
 }
 
-function isWorkflowNode(node: Node): boolean {
+function isWorkflowNode(node: WorkflowNode): boolean {
   const label = nodeDisplayLabel(node).toUpperCase();
   const type = String(node.data?.agentType || node.type || '').toUpperCase();
   return !['START', 'END', '__START__', '__END__', 'START_NODE', 'END_NODE'].includes(label) &&
     !['START_NODE', 'END_NODE'].includes(type);
 }
 
-function deepAgentIdFromNode(node: Node): number | null {
+function deepAgentIdFromNode(node: WorkflowNode): number | null {
   const data = node.data as any;
   const raw =
     data?.deepAgentId ||
@@ -170,7 +170,7 @@ function WorkflowProgressRail({
   nodeStatuses,
   isRunning,
 }: {
-  nodes: Node[];
+  nodes: WorkflowNode[];
   nodeStatuses: Record<string, NodeExecutionStatus>;
   isRunning: boolean;
 }) {

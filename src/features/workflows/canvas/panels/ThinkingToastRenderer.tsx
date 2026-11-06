@@ -6,12 +6,12 @@
  */
 
 import { memo } from 'react';
-import { Node } from 'reactflow';
+import type { WorkflowNode } from '../types';
 import ThinkingToast from '@/components/ui/ThinkingToast';
 import type { NodeExecutionStatus } from '@/hooks/useNodeExecutionStatus';
 
 interface ThinkingToastRendererProps {
-  nodes: Node[];
+  nodes: WorkflowNode[];
   nodeExecutionStatuses: Record<string, NodeExecutionStatus>;
   reactFlowInstance: any;
   showThinkingStream: boolean;
@@ -73,8 +73,10 @@ const ThinkingToastRenderer = memo(function ThinkingToastRenderer({
         }
 
         // Calculate position in flow coordinates
-        const flowX = node.position.x + (node.width || 200) / 2;
-        const flowY = node.position.y + (node.height || 100) + 20; // 20px below node
+        const nodeWidth = node.measured?.width || 200;
+        const nodeHeight = node.measured?.height || 100;
+        const flowX = node.position.x + nodeWidth / 2;
+        const flowY = node.position.y + nodeHeight + 20; // 20px below node
 
         // Convert flow coordinates to screen coordinates
         let screenPosition;
@@ -130,7 +132,7 @@ const ThinkingToastRenderer = memo(function ThinkingToastRenderer({
             toolCompleted={status.toolCompleted && status.toolCompletedTime &&
               (Date.now() - status.toolCompletedTime < 2000) ? status.toolCompleted : undefined}
             zoom={currentZoom}
-            nodeWidth={node.width || 200}
+            nodeWidth={nodeWidth}
           />
         );
       })}

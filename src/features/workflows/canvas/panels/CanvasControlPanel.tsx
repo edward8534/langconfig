@@ -6,7 +6,7 @@
  */
 
 import { memo } from 'react';
-import { Panel } from 'reactflow';
+import { Panel } from '@xyflow/react';
 import { List, Play, StopCircle, Trash2 } from 'lucide-react';
 
 interface ExecutionStatus {

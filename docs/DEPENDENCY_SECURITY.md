@@ -40,11 +40,10 @@ current resolution selects 1.15.0 with no reported advisory.
 ## Reproduce and validate compatibility
 
 ```console
-python -m pip install -r backend/requirements.txt
-python -m pip check
-python -m pip install pip-audit==2.10.1
-python -m pytest --noconftest backend/tests/test_python_advisory_policy.py -q
-python scripts/check-python-advisories.py
+uv sync --project backend --locked
+uv run --project backend --locked python -m pip check
+uv run --no-project --with pytest==9.1.1 python -m pytest --noconftest backend/tests/test_python_advisory_policy.py -q
+uv run --no-project --with pip-audit==2.10.1 python scripts/check-python-advisories.py
 ```
 
 CI also sets `LANGCONFIG_TEST_EMBEDDINGS=1` for the backend suite. The embedding

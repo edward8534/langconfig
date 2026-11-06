@@ -24,7 +24,7 @@ from tests.database_safety import is_disposable_test_database
 # Test database URL - separate from production
 TEST_DATABASE_URL = os.getenv(
     "TEST_DATABASE_URL",
-    "postgresql+asyncpg://langconfig:langconfig_dev@localhost:5433/langconfig_test"
+    "postgresql+asyncpg://langconfig:langconfig_dev@localhost:5432/langconfig_test"
 )
 
 

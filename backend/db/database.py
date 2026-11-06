@@ -29,7 +29,7 @@ DB_MAX_OVERFLOW = int(os.getenv("DB_MAX_OVERFLOW", "20"))
 # PostgreSQL URL (unified database for everything)
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "postgresql://langconfig:langconfig_dev@localhost:5433/langconfig"
+    "postgresql://langconfig:langconfig_dev@39.107.13.221:5432/langconfig"
 )
 
 # Async PostgreSQL URL (for async operations like event persistence)

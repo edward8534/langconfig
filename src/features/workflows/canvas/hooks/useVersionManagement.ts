@@ -6,7 +6,8 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
-import { Node, Edge } from 'reactflow';
+import type { Edge } from '@xyflow/react';
+import type { WorkflowNode } from '../types';
 import apiClient from '@/lib/api-client';
 
 interface WorkflowVersion {
@@ -31,9 +32,9 @@ interface VersionComparison {
 
 interface UseVersionManagementOptions {
   currentWorkflowId: number | null;
-  nodes: Node[];
+  nodes: WorkflowNode[];
   edges: Edge[];
-  setNodes: (nodes: Node[] | ((nodes: Node[]) => Node[])) => void;
+  setNodes: (nodes: WorkflowNode[] | ((nodes: WorkflowNode[]) => WorkflowNode[])) => void;
   setEdges: (edges: Edge[] | ((edges: Edge[]) => Edge[])) => void;
   showSuccess: (message: string) => void;
   showWarning: (message: string) => void;
@@ -107,7 +108,7 @@ export function useVersionManagement({
 
     try {
       const configuration = {
-        nodes: nodes.map((n: Node) => {
+        nodes: nodes.map((n: WorkflowNode) => {
           const nativeTools = n.data.config?.native_tools || n.data.config?.nativeTools || [];
           const normalizedConfig = {
             ...n.data.config,

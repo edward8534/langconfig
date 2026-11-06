@@ -47,6 +47,7 @@ The complete, tested onboarding path is in [docs/SETUP.md](docs/SETUP.md).
 
 - Node.js `^20.19.0` or `>=22.12.0` with npm 10+
 - Python 3.11-3.13 (Python 3.12 recommended)
+- uv
 - Docker with Compose v2
 - Git
 
@@ -57,12 +58,10 @@ The complete, tested onboarding path is in [docs/SETUP.md](docs/SETUP.md).
 git clone https://github.com/YOUR_USERNAME/langconfig.git
 cd langconfig
 
-# Create an isolated Python environment and configure the app
-python -m venv .venv
-# Activate .venv using the command for your shell; see docs/SETUP.md
+# Sync locked backend dependencies and configure the app
+uv sync --project backend
 npm ci
-python backend/scripts/setup.py
-python -m pip install -r backend/requirements-dev.txt
+uv run --project backend python backend/scripts/setup.py
 ```
 
 ### Running in Development
@@ -70,7 +69,7 @@ python -m pip install -r backend/requirements-dev.txt
 ```bash
 # Terminal 1 - Backend
 cd backend
-python main.py
+uv run python main.py
 
 # Terminal 2 - Frontend
 npm run dev

@@ -6,8 +6,8 @@
  */
 
 import React, { useCallback, useState, useEffect, useRef, useMemo, forwardRef, useImperativeHandle } from 'react';
-import ReactFlow, {
-  Node,
+import {
+  ReactFlow,
   Edge,
   Controls,
   Background,
@@ -17,8 +17,8 @@ import ReactFlow, {
   Connection,
   BackgroundVariant,
   MiniMap,
-} from 'reactflow';
-import 'reactflow/dist/style.css';
+} from '@xyflow/react';
+import '@xyflow/react/dist/style.css';
 import apiClient from '@/lib/api-client';
 import ConflictDialog from '../ui/ConflictDialog';
 import RealtimeExecutionPanel from '@/features/workflows/execution/RealtimeExecutionPanel';
@@ -69,6 +69,7 @@ import { useNodeManagement } from './hooks/useNodeManagement';
 import { useWorkflowEventProcessing } from './hooks/useWorkflowEventProcessing';
 import { useTaskManagement } from './hooks/useTaskManagement';
 import { TaskHistoryEntry, WorkflowCanvasTab } from './types';
+import type { NodeData, WorkflowNode } from './types';
 
 interface Agent {
   id: string;
@@ -91,40 +92,6 @@ interface Agent {
   enable_rag?: boolean;
   requires_human_approval?: boolean;
   tags?: string[];
-}
-
-interface NodeData {
-  label: string;
-  agentType: string;
-  model: string;
-  config: {
-    model: string;
-    fallback_models?: string[];
-    temperature: number;
-    max_tokens?: number;
-    system_prompt: string;
-    tools: string[];
-    native_tools: string[];
-    cli_tools?: string[];
-    custom_tools?: string[];
-    timeout_seconds: number;
-    max_retries: number;
-    enable_model_routing: boolean;
-    enable_parallel_tools: boolean;
-    enable_memory: boolean;
-    enable_rag?: boolean;
-    requires_human_approval?: boolean;
-    // Conversation context fields
-    enable_conversation_context?: boolean;
-    deep_agent_template_id?: number | null;
-    context_mode?: 'recent' | 'smart' | 'full';
-    context_window_size?: number;
-    banked_message_ids?: string[];
-    // DeepAgent support
-    subagents?: any[];
-    middleware?: any[];
-  };
-  executionStatus?: NodeExecutionStatus;
 }
 
 interface WorkflowExecutionContext {
@@ -181,7 +148,7 @@ interface WorkflowCanvasProps {
   externalSelectedTask?: TaskHistoryEntry | null;
 }
 
-const initialNodes: Node[] = [];
+const initialNodes: WorkflowNode[] = [];
 const initialEdges: Edge[] = [];
 const NON_CHAT_AGENT_TYPES = new Set([
   'START_NODE',
@@ -1094,8 +1061,8 @@ if __name__ == "__main__":
                   ? node.position.y
                   : 250
               },
-              width: node.width || 200, // Ensure width is always set
-              height: node.height || 100 // Ensure height is always set
+              width: undefined,
+              height: undefined
             };
           });
           setNodes(validatedNodes);
@@ -1210,7 +1177,7 @@ if __name__ == "__main__":
   const onConnect = useCallback(
     (params: Connection) => {
       // Find source node to check for control types
-      const sourceNode = nodes.find((n: Node) => n.id === params.source);
+      const sourceNode = nodes.find((n: WorkflowNode) => n.id === params.source);
       const agentType = sourceNode?.data?.agentType;
       
       // Determine default label based on existing edges from this node
@@ -1239,7 +1206,7 @@ if __name__ == "__main__":
 
       // Add edge with enhanced styling using theme colors
       const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
-      const newEdge = {
+      const newEdge: Edge = {
         ...params,
         id: `e-${params.source}-${params.target}-${Date.now()}`,
         type: 'smoothstep',
@@ -1256,7 +1223,7 @@ if __name__ == "__main__":
         },
         labelStyle: { fill: primaryColor || '#6366f1', fontWeight: 700 },
         labelBgStyle: { fill: '#ffffff', fillOpacity: 0.8 },
-        labelBgPadding: [8, 4],
+        labelBgPadding: [8, 4] as [number, number],
         labelBgBorderRadius: 4,
       };
       setEdges((eds: Edge[]) => addEdge(newEdge, eds));
@@ -1379,7 +1346,7 @@ if __name__ == "__main__":
         newPosition = { x: 250, y: 250 };
       }
 
-      const newNode: Node = {
+      const newNode: WorkflowNode = {
         id: `node-${nodeIdCounter}`,
         type: 'custom',
         position: newPosition,
@@ -1485,7 +1452,7 @@ if __name__ == "__main__":
       });
 
       // Create new nodes with updated positions and IDs
-      const newNodes: Node[] = selectedRecipe.nodes.map((recipeNode: any) => ({
+      const newNodes: WorkflowNode[] = selectedRecipe.nodes.map((recipeNode: any) => ({
         ...recipeNode,
         id: idMap[recipeNode.id],
         position: {
@@ -1703,7 +1670,7 @@ if __name__ == "__main__":
 
     try {
       const configuration = {
-        nodes: nodes.map((n: Node) => {
+        nodes: nodes.map((n: WorkflowNode) => {
           const nativeTools = n.data.config?.native_tools || n.data.config?.nativeTools || [];
           const normalizedConfig = {
             ...n.data.config,
@@ -1819,8 +1786,8 @@ if __name__ == "__main__":
               ? node.position.y
               : 250
           },
-          width: node.width || 200, // Ensure width is always set
-          height: node.height || 100 // Ensure height is always set
+          width: undefined,
+          height: undefined
         };
       });
 

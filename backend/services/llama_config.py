@@ -44,6 +44,7 @@ except ImportError as e:
 # Global flag to track initialization
 _initialized = False
 _multimodal_enabled = False
+_embedding_dimension = 384
 
 def initialize_llama_index_settings(
     litellm_proxy_url: Optional[str] = None, 
@@ -58,7 +59,7 @@ def initialize_llama_index_settings(
         litellm_api_key: API key for LiteLLM proxy authentication
         enable_multimodal: Whether to use multimodal embeddings (requires OpenAI API key)
     """
-    global _initialized, _multimodal_enabled
+    global _initialized, _multimodal_enabled, _embedding_dimension
     
     if _initialized:
         logger.info("LlamaIndex settings already initialized")
@@ -68,18 +69,28 @@ def initialize_llama_index_settings(
         raise RuntimeError("LlamaIndex integration is not available")
 
     try:
-        # Check if OpenAI API key is available for multimodal embeddings
-        openai_api_key = app_settings.OPENAI_API_KEY or os.getenv("OPENAI_API_KEY")
+        # OpenAI-compatible providers such as Alibaba Bailian can override the key and endpoint.
+        openai_api_key = (
+            os.getenv("EMBEDDING_API_KEY")
+            or os.getenv("DASHSCOPE_API_KEY")
+            or app_settings.OPENAI_API_KEY
+            or os.getenv("OPENAI_API_KEY")
+        )
 
         if enable_multimodal and openai_api_key and OpenAIEmbedding is not None:
-            logger.info("Initializing OpenAI multimodal embedding model")
+            embedding_model = os.getenv("EMBEDDING_MODEL", "text-embedding-3-large")
+            embedding_api_base = os.getenv("EMBEDDING_API_BASE") or os.getenv("OPENAI_BASE_URL")
+            _embedding_dimension = int(os.getenv("EMBEDDING_DIMENSION", "1024"))
+            logger.info("Initializing OpenAI-compatible embedding model: %s", embedding_model)
             Settings.embed_model = OpenAIEmbedding(
-                model="text-embedding-3-large",
-                dimensions=1024,  # Configurable dimensions for OpenAI embeddings
-                api_key=openai_api_key
+                model="text-embedding-3-small",
+                model_name=embedding_model,
+                dimensions=_embedding_dimension,
+                api_key=openai_api_key,
+                api_base=embedding_api_base,
             )
             _multimodal_enabled = True
-            logger.info("Multimodal embeddings enabled with OpenAI text-embedding-3-large")
+            logger.info("OpenAI-compatible embeddings enabled with %s", embedding_model)
         else:
             if enable_multimodal:
                 logger.warning("Multimodal requested but OpenAI API key not available, falling back to text-only")
@@ -90,6 +101,7 @@ def initialize_llama_index_settings(
                 model_name="sentence-transformers/all-MiniLM-L6-v2"
             )
             _multimodal_enabled = False
+            _embedding_dimension = 384
         
         # Configure LLM for HyDE if proxy details are provided
         if litellm_proxy_url and litellm_api_key:
@@ -203,8 +215,7 @@ def get_embedding_dimension() -> int:
     Returns:
         int: Embedding dimension (1024 for multimodal, 384 for text-only)
     """
-    global _multimodal_enabled
-    return 1024 if _multimodal_enabled else 384
+    return _embedding_dimension
 
 
 def is_multimodal_enabled() -> bool:

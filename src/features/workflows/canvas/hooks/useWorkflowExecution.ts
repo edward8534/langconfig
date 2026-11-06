@@ -6,7 +6,7 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
-import type { Node, Edge } from 'reactflow';
+import type { Node, Edge } from '@xyflow/react';
 import apiClient from '@/lib/api-client';
 import type { ExecutionStatus, ExecutionConfig, NodeData, NodeTokenCost } from '../types';
 

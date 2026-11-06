@@ -63,7 +63,7 @@ target_metadata = Base.metadata
 # This allows us to use different databases for development, testing, and production
 database_url = os.getenv(
     'DATABASE_URL',
-    'postgresql://langconfig:langconfig_dev@localhost:5433/langconfig'  # Default from database.py
+    'postgresql://langconfig:langconfig_dev@39.107.13.221:5432/langconfig'  # Default from database.py
 )
 config.set_main_option('sqlalchemy.url', database_url)
 

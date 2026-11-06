@@ -15,6 +15,7 @@ import { ProjectProvider } from './contexts/ProjectContext';
 import { ToastProvider, ToastContainer } from './hooks/useToast';
 import { ChatProvider, useChat } from './features/chat/state/ChatContext';
 import apiClient from './lib/api-client';
+import { LanguageProvider } from './contexts/LanguageContext';
 
 const ModernAgentLibrary = lazy(() => import('./features/agents/ui/ModernAgentLibrary'));
 const WorkflowCanvas = lazy(() => import('./features/workflows/canvas/WorkflowCanvas'));
@@ -516,15 +517,17 @@ function AppContent() {
 function App() {
   return (
     <ToastProvider>
-      <HashRouter>
-        <ProjectProvider>
-          <ChatProvider>
-            <AppContent />
-            <ChatModalHost />
-          </ChatProvider>
-        </ProjectProvider>
-      </HashRouter>
-      <ToastContainer />
+      <LanguageProvider>
+        <HashRouter>
+          <ProjectProvider>
+            <ChatProvider>
+              <AppContent />
+              <ChatModalHost />
+            </ChatProvider>
+          </ProjectProvider>
+        </HashRouter>
+        <ToastContainer />
+      </LanguageProvider>
     </ToastProvider>
   );
 }

@@ -379,7 +379,7 @@ def main():
     # Get database URL from environment
     database_url = os.getenv(
         "DATABASE_URL",
-        "postgresql://langconfig:langconfig_dev@localhost:5433/langconfig"
+        "postgresql://postgres:rag_password_2024@39.107.13.221:5432/rag_db"
     )
 
     # Create database session

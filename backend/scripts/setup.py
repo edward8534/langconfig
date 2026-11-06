@@ -15,9 +15,9 @@ One-command setup for fresh clones. Handles:
 4. Playwright browser installation (optional)
 
 Usage:
-    python backend/scripts/setup.py           # Full setup (from repository root)
-    python backend/scripts/setup.py --db-only # Database only
-    python backend/scripts/setup.py --help    # Show help
+    uv run --project backend python backend/scripts/setup.py           # Full setup (from repository root)
+    uv run --project backend python backend/scripts/setup.py --db-only # Database only
+    uv run --project backend python backend/scripts/setup.py --help    # Show help
 """
 
 import os
@@ -147,32 +147,29 @@ def setup_env_file():
     return True
 
 def install_dependencies():
-    """Install Python dependencies."""
+    """Sync Python dependencies from the uv lockfile."""
     print_step("Installing Python dependencies...")
     root = get_project_root()
-    requirements = root / "backend" / "requirements.txt"
+    project = root / "backend"
+    pyproject = project / "pyproject.toml"
     
-    if not requirements.exists():
-        print_error("requirements.txt not found!")
+    if not pyproject.exists():
+        print_error("backend/pyproject.toml not found!")
         return False
     
     try:
         subprocess.run(
-            [
-                sys.executable,
-                "-m",
-                "pip",
-                "install",
-                "--upgrade",
-                "-r",
-                str(requirements),
-            ],
+            ["uv", "sync", "--project", str(project), "--active", "--locked"],
+            cwd=root,
             check=True
         )
         print_success("Dependencies installed")
         return True
     except subprocess.CalledProcessError as e:
-        print_error(f"Failed to install dependencies: {e}")
+        print_error(f"uv sync failed: {e}")
+        return False
+    except FileNotFoundError:
+        print_error("uv not found. Install uv before running setup.")
         return False
 
 def start_database():
@@ -441,8 +438,8 @@ def main():
             success = False
         
         # Dependencies
-        if not install_dependencies():
-            success = False
+        # if not install_dependencies():
+        #     success = False
     
     # Docker check
     has_docker = check_docker()

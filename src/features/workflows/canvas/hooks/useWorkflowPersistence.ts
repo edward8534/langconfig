@@ -6,15 +6,16 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
-import { Node, Edge } from 'reactflow';
+import type { Edge } from '@xyflow/react';
+import type { WorkflowNode } from '../types';
 import apiClient, { ConflictErrorClass } from '@/lib/api-client';
 import { validateWorkflow } from '@/lib/workflow-validator';
 
 interface UseWorkflowPersistenceOptions {
-  nodes: Node[];
+  nodes: WorkflowNode[];
   edges: Edge[];
   currentWorkflowId: number | null;
-  setNodes: (nodes: Node[] | ((nodes: Node[]) => Node[])) => void;
+  setNodes: (nodes: WorkflowNode[] | ((nodes: WorkflowNode[]) => WorkflowNode[])) => void;
   setEdges: (edges: Edge[] | ((edges: Edge[]) => Edge[])) => void;
   setWorkflowName: (name: string) => void;
   setEditedName: (name: string) => void;
@@ -50,7 +51,7 @@ export function useWorkflowPersistence({
   const [lastSavedState, setLastSavedState] = useState<string>('');
 
   // Helper to generate a hash of the workflow state, excluding visual properties
-  const getWorkflowStateHash = useCallback((nodes: Node[], edges: Edge[]) => {
+  const getWorkflowStateHash = useCallback((nodes: WorkflowNode[], edges: Edge[]) => {
     const sanitizedNodes = nodes.map(node => ({
       id: node.id,
       type: node.type,

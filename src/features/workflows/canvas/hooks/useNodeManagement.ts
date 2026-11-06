@@ -6,7 +6,8 @@
  */
 
 import { useCallback } from 'react';
-import { Node, Edge } from 'reactflow';
+import type { Edge } from '@xyflow/react';
+import type { WorkflowNode } from '../types';
 
 interface NodeTokenCost {
   promptTokens: number;
@@ -16,7 +17,7 @@ interface NodeTokenCost {
 }
 
 interface UseNodeManagementOptions {
-  setNodes: React.Dispatch<React.SetStateAction<Node[]>>;
+  setNodes: React.Dispatch<React.SetStateAction<WorkflowNode[]>>;
   setEdges: React.Dispatch<React.SetStateAction<Edge[]>>;
   setNodeTokenCosts?: React.Dispatch<React.SetStateAction<Record<string, NodeTokenCost>>>;
   onNodeSelect?: (nodeId: string, nodeData: any) => void;
@@ -24,7 +25,7 @@ interface UseNodeManagementOptions {
 }
 
 interface UseNodeManagementReturn {
-  handleNodeClick: (event: React.MouseEvent, node: Node) => void;
+  handleNodeClick: (event: React.MouseEvent, node: WorkflowNode) => void;
   handleNodeDelete: (nodeId: string) => void;
   updateNodeConfig: (nodeId: string, newConfig: any) => void;
 }
@@ -41,7 +42,7 @@ export function useNodeManagement({
 }: UseNodeManagementOptions): UseNodeManagementReturn {
   // Handle node selection
   const handleNodeClick = useCallback(
-    (_event: React.MouseEvent, node: Node) => {
+    (_event: React.MouseEvent, node: WorkflowNode) => {
       if (onNodeSelect) {
         onNodeSelect(node.id, node.data);
       }

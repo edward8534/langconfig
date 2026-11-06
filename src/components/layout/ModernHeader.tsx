@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { MessageSquare } from 'lucide-react';
 import { useProject } from "../../contexts/ProjectContext";
 import { useChat } from '../../features/chat/state/ChatContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 interface ModernHeaderProps {
   currentView: 'studio' | 'spatial' | 'library' | 'settings' | 'knowledge' | 'agents' | 'skills' | 'hermes' | 'home' | 'community';
@@ -21,6 +22,7 @@ export default function ModernHeader({
 }: ModernHeaderProps) {
   const { activeProject, projects, setActiveProjectId, loading } = useProject();
   const { openChat } = useChat();
+  const { language, setLanguage, t } = useLanguage();
   const [showProjectDropdown, setShowProjectDropdown] = useState(false);
 
   return (
@@ -89,7 +91,7 @@ export default function ModernHeader({
         >
           <span className="flex items-center gap-2">
             <span className="material-symbols-outlined text-base">account_tree</span>
-            <span className="hidden xl:inline">Studio</span>
+            <span className="hidden xl:inline">{t('navStudio')}</span>
           </span>
         </button>
         <button
@@ -105,7 +107,7 @@ export default function ModernHeader({
         >
           <span className="flex items-center gap-2">
             <span className="material-symbols-outlined text-base">deployed_code</span>
-            <span className="hidden xl:inline">Spatial</span>
+            <span className="hidden xl:inline">{t('navSpatial')}</span>
           </span>
         </button>
         <button
@@ -121,7 +123,7 @@ export default function ModernHeader({
         >
           <span className="flex items-center gap-2">
             <span className="material-symbols-outlined text-base">psychology</span>
-            <span className="hidden xl:inline">Agents</span>
+            <span className="hidden xl:inline">{t('navAgents')}</span>
           </span>
         </button>
         <button
@@ -137,7 +139,7 @@ export default function ModernHeader({
         >
           <span className="flex items-center gap-2">
             <span className="material-symbols-outlined text-base">auto_awesome</span>
-            <span className="hidden xl:inline">Hermes</span>
+            <span className="hidden xl:inline">{t('navHermes')}</span>
           </span>
         </button>
         <button
@@ -153,7 +155,7 @@ export default function ModernHeader({
         >
           <span className="flex items-center gap-2">
             <span className="material-symbols-outlined text-base">folder</span>
-            <span className="hidden xl:inline">Library</span>
+            <span className="hidden xl:inline">{t('navLibrary')}</span>
           </span>
         </button>
         <button
@@ -169,7 +171,7 @@ export default function ModernHeader({
         >
           <span className="flex items-center gap-2">
             <span className="material-symbols-outlined text-base">database</span>
-            <span className="hidden xl:inline">Knowledge</span>
+            <span className="hidden xl:inline">{t('navKnowledge')}</span>
           </span>
         </button>
         <button
@@ -185,18 +187,33 @@ export default function ModernHeader({
         >
           <span className="flex items-center gap-2">
             <span className="material-symbols-outlined text-base">groups</span>
-            <span className="hidden xl:inline">Community</span>
+            <span className="hidden xl:inline">{t('navCommunity')}</span>
           </span>
         </button>
       </nav>
 
       {/* Right: Project Selector & Action Buttons */}
       <div className="flex items-center gap-2">
+        <div className="flex h-10 items-center border-2 border-border-dark rounded-[4px]" role="group" aria-label={t('language')}>
+          {(['en', 'zh'] as const).map((option) => (
+            <button
+              key={option}
+              type="button"
+              aria-pressed={language === option}
+              onClick={() => setLanguage(option)}
+              className={`h-full px-2 font-mono text-xs font-semibold transition-colors ${language === option ? 'bg-background-light/70' : 'hover:bg-background-light/45'}`}
+              style={{ color: 'var(--color-text-primary)' }}
+            >
+              {option === 'en' ? 'EN' : '中文'}
+            </button>
+          ))}
+        </div>
+
         {/* Chat Button */}
         <button
           onClick={() => openChat()}
           className="flex items-center justify-center h-10 w-10 rounded-[4px] hover:bg-background-light/45 transition-all border-2 border-transparent hover:border-border-dark"
-          title="Chat (Ctrl+K)"
+          title={t('chat')}
           style={{
             color: 'var(--color-text-primary)'
           }}
@@ -215,7 +232,7 @@ export default function ModernHeader({
           >
             <span className="material-symbols-outlined text-base">folder_open</span>
             <span className="hidden truncate text-sm font-medium lg:block">
-              {loading ? 'Loading...' : activeProject?.name || 'No Project'}
+              {loading ? t('loading') : activeProject?.name || t('noProject')}
             </span>
             <span className="material-symbols-outlined text-base ml-auto">
               {showProjectDropdown ? 'expand_less' : 'expand_more'}
@@ -238,7 +255,7 @@ export default function ModernHeader({
               >
                 {projects.length === 0 ? (
                   <div className="px-4 py-3 text-sm" style={{ color: 'var(--color-text-muted)' }}>
-                    No projects found
+                    {t('noProjectsFound')}
                   </div>
                 ) : (
                   projects.map(project => (
@@ -279,7 +296,7 @@ export default function ModernHeader({
         <button
           onClick={() => onViewChange('settings')}
           className="flex items-center justify-center h-10 w-10 rounded-[4px] hover:bg-background-light/45 transition-all border-2 border-transparent hover:border-border-dark"
-          title="Settings"
+          title={t('settings')}
           style={{
             color: 'var(--color-text-primary)'
           }}

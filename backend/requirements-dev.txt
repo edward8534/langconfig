@@ -1,2 +1,2 @@
-# Development gates only; install alongside backend/requirements.txt.
+# Compatibility manifest; canonical development dependencies live in pyproject.toml.
 ruff==0.16.6

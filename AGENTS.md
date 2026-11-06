@@ -12,15 +12,15 @@ Visual platform for building LangChain agents and LangGraph workflows.
 
 ```bash
 # Start development
-cd backend && python main.py      # API server :8780
+cd backend && uv run python main.py # API server :8780
 npm run dev                        # Frontend :1425
 
 # Database
 docker compose up -d postgres      # Start PostgreSQL
-cd backend && python -m alembic upgrade head # Run migrations
+cd backend && uv run python -m alembic upgrade head # Run migrations
 
 # Testing
-cd backend && python -m pytest     # Backend tests
+cd backend && uv run python -m pytest # Backend tests
 npm run build                      # Frontend build check
 ```
 
@@ -49,10 +49,10 @@ npm run build                      # Frontend build check
 
 ## Local setup
 
-- Follow `docs/SETUP.md`; use `python -m ...` so commands run in the active virtual environment.
+- Follow `docs/SETUP.md`; use `uv sync --project backend` and `uv run` for backend commands.
 - The root `.env` is canonical for Docker, the frontend, and the backend.
 - `backend/.env` is optional and only for backend-specific local overrides.
-- Use `python backend/scripts/setup.py` for a blank database; use `python -m alembic upgrade head` only for an existing LangConfig schema.
+- Use `uv run --project backend python backend/scripts/setup.py` for a blank database; use `uv run --project backend python -m alembic upgrade head` only for an existing LangConfig schema.
 
 ## Detailed Docs
 

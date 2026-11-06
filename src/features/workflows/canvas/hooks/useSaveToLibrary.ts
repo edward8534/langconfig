@@ -6,7 +6,7 @@
  */
 
 import { useState, useCallback } from 'react';
-import { Node } from 'reactflow';
+import type { WorkflowNode } from '../types';
 import apiClient from '@/lib/api-client';
 
 interface NodeData {
@@ -33,7 +33,7 @@ interface SaveToLibraryData {
 }
 
 interface UseSaveToLibraryOptions {
-  setNodes: React.Dispatch<React.SetStateAction<Node[]>>;
+  setNodes: React.Dispatch<React.SetStateAction<WorkflowNode[]>>;
   setNodeContextMenu: (menu: any) => void;
   showWarning: (message: string) => void;
   showSuccess: (message: string) => void;

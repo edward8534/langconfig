@@ -6,14 +6,15 @@
  */
 
 import { useState, useCallback, useEffect, useMemo } from 'react';
-import { Node, Edge } from 'reactflow';
+import type { Edge } from '@xyflow/react';
+import type { WorkflowNode } from '../types';
 import apiClient from '@/lib/api-client';
 
 interface UseWorkflowManagementOptions {
   workflowId?: number;
-  nodes: Node[];
+  nodes: WorkflowNode[];
   edges: Edge[];
-  setNodes: (nodes: Node[] | ((nodes: Node[]) => Node[])) => void;
+  setNodes: (nodes: WorkflowNode[] | ((nodes: WorkflowNode[]) => WorkflowNode[])) => void;
   setEdges: (edges: Edge[] | ((edges: Edge[]) => Edge[])) => void;
   setNodeIdCounter: (counter: number | ((prev: number) => number)) => void;
   showSuccess: (message: string) => void;
@@ -128,7 +129,7 @@ export function useWorkflowManagement({
           setNodes(restoredNodes);
 
           // Update node ID counter to prevent collisions
-          const maxId = Math.max(...restoredNodes.map((n: Node) => {
+          const maxId = Math.max(...restoredNodes.map((n: WorkflowNode) => {
             const match = n.id.match(/node-(\d+)/);
             return match ? parseInt(match[1], 10) : 0;
           }), 0);

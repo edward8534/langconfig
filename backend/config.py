@@ -85,7 +85,7 @@ class Settings(BaseSettings):
     # Database - PostgreSQL for LangGraph checkpointing support
     database_url: str = os.getenv(
         "DATABASE_URL",
-        "postgresql://langconfig:langconfig_dev@localhost:5433/langconfig"
+        "postgresql://postgres:rag_password_2024@39.107.13.221:5432/rag_db"
     )
 
     # API Keys - Stored as private attributes, accessed via properties

@@ -132,3 +132,4 @@ langconfig/
 !docs/BRANCH_INVENTORY_2026-09.json
 !docs/MIDDLEWARE_COMPATIBILITY.md
 !docs/RUNTIME_SCHEMA.md
+/backend/.venv

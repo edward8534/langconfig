@@ -44,12 +44,12 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from models.core import ContextDocument, IndexingStatus, DocumentType
 from db.database import AsyncSessionLocal
-from services.llama_config import get_vector_store, get_embedding_dimension
+from services.llama_config import ensure_initialized, get_embedding_dimension
 
 logger = logging.getLogger(__name__)
 
 # Dedicated table name for context documents - separate from project-specific tables
-CONTEXT_DOCS_TABLE_NAME = "context_documents_embeddings"
+CONTEXT_DOCS_TABLE_NAME = "data_context_documents_embeddings"
 
 
 async def search_context_documents(query: str, top_k: int = 5) -> Dict[str, Any]:
@@ -326,6 +326,9 @@ class ContextDocumentIndexer:
         logger.info(f"Starting indexing for context document {document_id}")
 
         try:
+            ensure_initialized()
+            self.embedding_dimension = get_embedding_dimension()
+
             # Get document metadata from database
             async with AsyncSessionLocal() as db:
                 doc = await db.get(ContextDocument, document_id)
@@ -614,7 +617,7 @@ class ContextDocumentIndexer:
                 # Delete embeddings where metadata contains the document ID
                 delete_query = text(f"""
                     DELETE FROM {table_name}
-                    WHERE metadata->>'document_id' = :document_id
+                    WHERE metadata_->>'document_id' = :document_id
                 """)
 
                 result = await session.execute(delete_query, {"document_id": str(document_id)})
@@ -662,7 +665,7 @@ class ContextDocumentIndexer:
 
                 count_query = text(f"""
                     SELECT COUNT(*) FROM {table_name}
-                    WHERE metadata->>'document_id' = :document_id
+                    WHERE metadata_->>'document_id' = :document_id
                 """)
 
                 result = await session.execute(count_query, {"document_id": str(document_id)})

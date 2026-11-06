@@ -45,8 +45,8 @@ the focused Python lint check.
 ```bash
 npm ci
 npm audit --audit-level=low
-python -m pip install -r backend/requirements-dev.txt
-python -m ruff check .
+uv sync --project backend --locked --only-dev
+uv run --project backend --locked python -m ruff check .
 npm run check:interfaces
 npm run build
 npx playwright install chromium
@@ -57,12 +57,13 @@ Verify `python --version` before installing or running backend commands. On
 Windows, activate `.venv` or call its interpreter explicitly:
 
 ```powershell
-& .\.venv\Scripts\python.exe -m pip install -r backend/requirements-dev.txt
-& .\.venv\Scripts\python.exe -m ruff check .
+uv sync --project backend --locked --only-dev
+uv run --project backend --locked python -m ruff check .
 ```
 
 Biome is pinned in `package.json` and `package-lock.json`; Ruff is pinned in
-`backend/requirements-dev.txt`. Commit the npm manifest and lock together.
+the `dev` dependency group in `backend/pyproject.toml`, with resolved versions
+locked in `backend/uv.lock`. Commit each manifest with its lockfile.
 Do not update runtime dependency ranges as a side effect of adding a check.
 
 ## Backend tests use a disposable database
@@ -82,8 +83,8 @@ your local Compose configuration.
 PowerShell:
 
 ```powershell
-$env:DATABASE_URL = 'postgresql://langconfig:langconfig_dev@localhost:5433/langconfig_test'
-$env:TEST_DATABASE_URL = 'postgresql+asyncpg://langconfig:langconfig_dev@localhost:5433/langconfig_test'
+$env:DATABASE_URL = 'postgresql://langconfig:langconfig_dev@localhost:5432/langconfig_test'
+$env:TEST_DATABASE_URL = 'postgresql+asyncpg://langconfig:langconfig_dev@localhost:5432/langconfig_test'
 Set-Location backend
 python -m pytest -q --ignore=tests/test_playwright_tools.py
 Set-Location ..
@@ -92,8 +93,8 @@ Set-Location ..
 Bash:
 
 ```bash
-export DATABASE_URL=postgresql://langconfig:langconfig_dev@localhost:5433/langconfig_test
-export TEST_DATABASE_URL=postgresql+asyncpg://langconfig:langconfig_dev@localhost:5433/langconfig_test
+export DATABASE_URL=postgresql://langconfig:langconfig_dev@localhost:5432/langconfig_test
+export TEST_DATABASE_URL=postgresql+asyncpg://langconfig:langconfig_dev@localhost:5432/langconfig_test
 cd backend
 python -m pytest -q --ignore=tests/test_playwright_tools.py
 cd ..

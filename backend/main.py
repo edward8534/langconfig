@@ -10,6 +10,7 @@ Main application entry point
 import sys
 import asyncio
 import selectors
+import os
 
 # Fix for Windows: psycopg requires SelectorEventLoop, not ProactorEventLoop
 if sys.platform == 'win32':
@@ -33,6 +34,10 @@ warnings.filterwarnings("ignore", message=".*validate_default.*")
 # Import settings for environment configuration
 from config import settings
 
+PROCESS_ROLE = os.getenv("LANGCONFIG_PROCESS_ROLE", "all").lower()
+if PROCESS_ROLE not in {"all", "api", "worker"}:
+    raise ValueError("LANGCONFIG_PROCESS_ROLE must be 'all', 'api', or 'worker'")
+
 # Configure logging based on environment
 log_level = logging.DEBUG if settings.debug else logging.INFO
 logging.basicConfig(
@@ -55,14 +60,16 @@ async def lifespan(app: FastAPI):
     # Startup
     logger.info("Starting LangConfig API...")
 
-    # Initialize PostgreSQL database (unified database for everything)
-    try:
-        await async_init_db()
-        logger.info("PostgreSQL database initialized successfully")
-    except Exception as e:
-        logger.error(f"PostgreSQL initialization failed: {e}")
-        logger.error("Make sure PostgreSQL is running: docker compose up -d postgres")
-        logger.warning("Continuing without database - most features will be unavailable")
+    # Production API workers rely on the dedicated worker process to initialize
+    # the schema before they start.
+    if PROCESS_ROLE != "api":
+        try:
+            await async_init_db()
+            logger.info("PostgreSQL database initialized successfully")
+        except Exception as e:
+            logger.error(f"PostgreSQL initialization failed: {e}")
+            logger.error("Make sure PostgreSQL is running: docker compose up -d postgres")
+            logger.warning("Continuing without database - most features will be unavailable")
 
     # Initialize LangGraph checkpointing for workflow persistence and HITL
     try:
@@ -82,44 +89,44 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         logger.warning(f"MCP Manager initialization failed: {e}. MCP tools may not be available.")
 
-    # Start chat session manager for automatic cleanup
-    try:
-        from services.chat_session_manager import start_session_manager
-        await start_session_manager()
-        logger.info("Chat session manager started successfully")
-    except Exception as e:
-        logger.warning(f"Chat session manager failed to start: {e}. Abandoned sessions won't be cleaned up automatically.")
+    # The agent cache is process-local, so each API worker needs its own manager.
+    if PROCESS_ROLE != "worker":
+        try:
+            from services.chat_session_manager import start_session_manager
+            await start_session_manager()
+            logger.info("Chat session manager started successfully")
+        except Exception as e:
+            logger.warning(f"Chat session manager failed to start: {e}. Abandoned sessions won't be cleaned up automatically.")
 
-    # Start background task queue workers
-    try:
-        # Import task handlers to register them
-        import core.task_handlers  # noqa - registers handlers via decorators
+    if PROCESS_ROLE != "api":
+        # Start background task queue workers
+        try:
+            import core.task_handlers  # noqa - registers handlers via decorators
 
-        from core.task_queue import task_queue
-        task_queue.start_workers(num_workers=2)
-        logger.info("Background task queue workers started (2 workers)")
-    except Exception as e:
-        logger.error(f"Failed to start background workers: {e}")
-        logger.error("Long-running operations will not work properly")
-        # Don't fail startup - app can still run without background workers
+            from core.task_queue import task_queue
+            task_queue.start_workers(num_workers=2)
+            logger.info("Background task queue workers started (2 workers)")
+        except Exception as e:
+            logger.error(f"Failed to start background workers: {e}")
+            logger.error("Long-running operations will not work properly")
 
-    # Start workflow scheduler service
-    try:
-        from services.scheduler_service import start_scheduler
-        await start_scheduler()
-        logger.info("Workflow scheduler service started")
-    except Exception as e:
-        logger.warning(f"Workflow scheduler failed to start: {e}. Scheduled workflows will not run automatically.")
+        # Start workflow scheduler service once, outside the API worker pool.
+        try:
+            from services.scheduler_service import start_scheduler
+            await start_scheduler()
+            logger.info("Workflow scheduler service started")
+        except Exception as e:
+            logger.warning(f"Workflow scheduler failed to start: {e}. Scheduled workflows will not run automatically.")
 
-    # Start file watcher service for file-based triggers
-    try:
-        from services.triggers.file_watcher import start_file_watchers
-        await start_file_watchers()
-        logger.info("File watcher service started")
-    except ImportError:
-        logger.info("File watcher service not started (watchdog package not installed - optional)")
-    except Exception as e:
-        logger.warning(f"File watcher service failed to start: {e}. File triggers will not work.")
+        # File watchers must not be duplicated across API worker processes.
+        try:
+            from services.triggers.file_watcher import start_file_watchers
+            await start_file_watchers()
+            logger.info("File watcher service started")
+        except ImportError:
+            logger.info("File watcher service not started (watchdog package not installed - optional)")
+        except Exception as e:
+            logger.warning(f"File watcher service failed to start: {e}. File triggers will not work.")
 
     logger.info("LangConfig API startup complete")
 
@@ -136,37 +143,39 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         logger.error(f"Error stopping Codex harness: {e}")
 
-    # Shutdown file watcher service
-    try:
-        from services.triggers.file_watcher import stop_file_watchers
-        await stop_file_watchers()
-        logger.info("File watcher service stopped")
-    except Exception as e:
-        logger.error(f"Error stopping file watcher service: {e}")
+    if PROCESS_ROLE != "api":
+        # Shutdown file watcher service
+        try:
+            from services.triggers.file_watcher import stop_file_watchers
+            await stop_file_watchers()
+            logger.info("File watcher service stopped")
+        except Exception as e:
+            logger.error(f"Error stopping file watcher service: {e}")
 
-    # Shutdown workflow scheduler service (before task queue)
-    try:
-        from services.scheduler_service import stop_scheduler
-        await stop_scheduler()
-        logger.info("Workflow scheduler service stopped")
-    except Exception as e:
-        logger.error(f"Error stopping workflow scheduler: {e}")
+        # Shutdown workflow scheduler service (before task queue)
+        try:
+            from services.scheduler_service import stop_scheduler
+            await stop_scheduler()
+            logger.info("Workflow scheduler service stopped")
+        except Exception as e:
+            logger.error(f"Error stopping workflow scheduler: {e}")
 
-    # Shutdown background task queue workers
-    try:
-        from core.task_queue import task_queue
-        await task_queue.shutdown(timeout=30)
-        logger.info("Background task queue workers stopped")
-    except Exception as e:
-        logger.error(f"Error stopping background workers: {e}")
+        # Shutdown background task queue workers
+        try:
+            from core.task_queue import task_queue
+            await task_queue.shutdown(timeout=30)
+            logger.info("Background task queue workers stopped")
+        except Exception as e:
+            logger.error(f"Error stopping background workers: {e}")
 
-    # Shutdown chat session manager
-    try:
-        from services.chat_session_manager import stop_session_manager
-        await stop_session_manager()
-        logger.info("Chat session manager stopped")
-    except Exception as e:
-        logger.error(f"Error stopping chat session manager: {e}")
+    if PROCESS_ROLE != "worker":
+        # Shutdown the process-local chat agent cache.
+        try:
+            from services.chat_session_manager import stop_session_manager
+            await stop_session_manager()
+            logger.info("Chat session manager stopped")
+        except Exception as e:
+            logger.error(f"Error stopping chat session manager: {e}")
 
     # Shutdown LangGraph checkpointing
     try:

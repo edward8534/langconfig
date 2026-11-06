@@ -73,6 +73,7 @@ LangConfig ships with 8 out-of-box workflow templates spanning research, coding,
 
 - **Node.js** `^20.19.0` or `>=22.12.0`, with npm 10+ ([Download](https://nodejs.org/))
 - **Python** 3.11-3.13; Python 3.12 is regularly tested ([Download](https://www.python.org/downloads/))
+- **uv** for locked backend dependency management
 - **Docker Desktop** ([Download](https://www.docker.com/products/docker-desktop/))
 
 ### Installation
@@ -83,16 +84,15 @@ git clone https://github.com/langconfig/langconfig.git
 cd langconfig
 ```
 
-**2. Create an Isolated Python Environment and Install Frontend Dependencies**
+**2. Sync Backend Dependencies and Install Frontend Dependencies**
 ```bash
-python -m venv .venv
-# Activate .venv using the command for your shell; see docs/SETUP.md
+uv sync --project backend
 npm ci
 ```
 
 **3. Run Backend Setup Script**
 ```bash
-python backend/scripts/setup.py
+uv run --project backend python backend/scripts/setup.py
 ```
 
 This automated script will:
@@ -103,14 +103,13 @@ This automated script will:
 - Initialize the database and seed agent templates
 - Seed **8 ready-to-run template workflows** (Deep Research, Learning Research, Research & Content Editor, Code Review Panel, Plan-Build-Verify Coder, Privacy-First Document Analyst, Competitive Intel Sweep, Content Studio Pipeline)
 
-See the [complete setup guide](docs/SETUP.md) for shell-specific virtual
-environment commands, existing-clone upgrades, test database setup, and optional
-features.
+See the [complete setup guide](docs/SETUP.md) for uv environment setup,
+existing-clone upgrades, test database setup, and optional features.
 
 After upgrading LangConfig, re-sync the seeded template workflows with the latest recipe definitions:
 
 ```bash
-python backend/db/seed_langconfig_dev.py --refresh-templates
+uv run --project backend python backend/db/seed_langconfig_dev.py --refresh-templates
 ```
 
 This only updates rows marked as templates (`is_template = true`) — your own workflows are never touched.
@@ -137,7 +136,7 @@ use your GitHub authentication and do not require an LLM API key.
 **Terminal 1 - Start Backend:**
 ```bash
 cd backend
-python main.py
+uv run python main.py
 ```
 
 Backend runs at: `http://127.0.0.1:8780`
@@ -338,7 +337,7 @@ file to configure the application. Existing `.env` files are preserved; see
 **Required:**
 | Variable | Description |
 |----------|-------------|
-| `DATABASE_URL` | PostgreSQL connection string (default: `postgresql://langconfig:langconfig_dev@localhost:5433/langconfig`) |
+| `DATABASE_URL` | PostgreSQL connection string (default: `postgresql://postgres:rag_password_2024@39.107.13.221:5432/rag_db`) |
 
 **LLM API Keys** (required only for the corresponding hosted provider):
 | Variable | Description |
@@ -519,9 +518,7 @@ For a brand-new database, use `python backend/scripts/setup.py`. Do not use
 
 ```bash
 # Reinstall all dependencies
-cd backend
-python -m pip install --upgrade pip
-python -m pip install --upgrade -r requirements.txt
+uv sync --project backend --locked
 ```
 
 ---
