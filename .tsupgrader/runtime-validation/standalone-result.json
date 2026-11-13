@@ -1,0 +1,68 @@
+{
+  "planHash": "201dc51c7c5de726bf114b3c624127813b5f958bc6129ac763b93bd6d3953465",
+  "phase": "standalone",
+  "recordedAtUtc": "2026-11-04T11:22:36.1061282Z",
+  "retryCount": 0,
+  "resetBaseline": false,
+  "complete": true,
+  "result": {
+    "setupSucceeded": true,
+    "setupDurationMs": 0,
+    "setupFailureOutput": null,
+    "assertions": [
+      {
+        "name": "vite-production-bundle",
+        "kind": "process",
+        "verificationMethod": "exit-code",
+        "passed": true,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": 0,
+        "outputSample": "\u001B[36mvite v7.3.6 \u001B[32mbuilding client environment for production...\u001B[36m\u001B[39m\r\ntransforming...\r\n\u001B[32m\u2713\u001B[39m 4381 modules transformed.\r\nrendering chunks...\r\ncomputing gzip size...\r\n\u001B[2mdist/\u001B[22m\u001B[32mindex.html                               \u001B[39m\u001B[1m\u001B[2m  1.29 kB\u001B[22m\u001B[1m\u001B[22m\u001B[2m \u2502 gzip:   0.65 kB\u001B[22m\r\n\u001B[2mdist/\u001B[22m\u001B[32m.vite/manifest.json                      \u001B[39m\u001B[1m\u001B[2m 11.83 kB\u001B[22m\u001B[1m\u001B[22m\u001B[2m \u2502 gzip:   1.65 kB\u001B[22m\r\n\u001B[2mdist/\u001B[22m\u001B[35massets/WorkflowCanvas-BnuhLJ6X.css       \u001B[39m\u001B[1m\u001B[2m 15.87 kB\u001B[22m\u001B[1m\u001B[22m\u001B[2m \u2502 gzip:   2.67 kB\u001B[22m\r\n\u001B[2mdist/\u001B[22m\u001B[35massets/index-Bm5540qP.css                \u001B[39m\u001B[1m\u001B[2m131.94 kB\u001B[22m\u001B[1m\u001B[22m\u001B[2m \u2502 gzip:  20.98 kB\u001B[22m\r\n\u001B[2mdist/\u001B[22m\u001B[36massets/ModelSelector-C_QBs2-z.js         \u001B[39m\u001B[1m\u001B[2m  1.07 kB\u001B[22m\u001B[1m\u001B[22m\u001B[2m \u2502 gzip:   0.57 kB\u001B[22m\r\n\u001B[2mdist/\u001B[22m\u001B[36massets/index-ZqTJLjwd.js                 \u001B[39m\u001B[1m\u001B[2m  1.30 kB\u001B[22m\u001B[1m\u001B[22m\u001B[2m \u2502 gzip:   0.45 kB\u001B[22m\r\n\u001B[2mdist/\u001B[22m\u001B[36massets/useAvailableModels-CdaDnkj4.js    \u001B[39m\u001B[1m\u001B[2m  2.42 kB\u001B[22m\u001B[1m\u001B[22m\u001B[2m \u2502 gzip:   1.10 kB\u001B[22m\r\n\u001B[2mdist/\u001B[22m\u001B[36massets/useNotification-BzuWQpiz.js       \u001B[39m\u001B[1m\u001B[2m  3.26 kB\u001B[22m\u001B[1m\u001B[22m\u001B[2m \u2502 gzip:   1.13 kB\u001B[22m\r\n\u001B[2mdist/\u001B[22m\u001B[36massets/CommunityPage-CRkEbXy9.js         \u001B[39m\u001B[1m\u001B[2m  3.46 kB\u001B[22m\u001B[1m\u001B[22m\u001B[2m \u2502 gzip:   0.85 kB\u001B[22m\r\n\u001B[2mdist/\u001B[22m\u001B[36massets/vendor-state-0rFY2j7K.js          \u001B[39m\u001B[1m\u001B[2m  4.13 kB\u001B[22m\u001B[1m\u001B[22m\u001B[2m \u2502 gzip:   1.70 kB\u001B[22m\r\n\u001B[2mdist/\u001B[22m\u001B[36massets/ConflictDialog-BnlktKuA.js        \u001B[39m\u001B[1m\u001B[2m  5.12 kB\u001B[22m\u001B[1m\u001B[22m\u001B[2m \u2502 gzip:   1.58 kB\u001B[22m\r\n\u001B[2mdist/\u001B[22m\u001B[36massets/exportHelpers-D2gdqQqP.js         \u001B[39m\u001B[1m\u001B[2m  6.35 kB\u001B[22m\u001B[1m\u001B[22m\u001B[2m \u2502 gzip:   2.33 kB\u001B[22m\r\n\u001B[2mdist/\u001B[22m\u001B[36massets/useWorkflowStream-DzTaHBp2.js     \u001B[39m\u001B[1m\u001B[2m  7.07 kB\u001B[22m\u001B[1m\u001B[22m\u001B[2m \u2502 gzip:   2.85 kB\u001B[22m\r\n\u001B[2mdist/\u001B[22m\u001B[36massets/SkillLibrary-CrKPs1we.js          \u001B[39m\u001B[1m\u001B[2m 10.17 kB\u001B[22m\u001B[1m\u001B[22m\u001B[2m \u2502 gzip:   2.90 kB\u001B[22m\r\n\u001B[2mdist/\u001B[22m\u001B[36massets/HomePage-Dqh2Q_a2.js              \u001B[39m\u001B[1m\u001B[2m 10.36 kB\u001B[22m\u001B[1m\u001B[22m\u001B[2m \u2502 gzip:   2.50 kB\u001B[22m\r\n\u001B[2mdist/\u001B[22m\u001B[36massets/HermesWorkspace-B5_4itZm.js       \u001B[39m\u001B[1m\u001B[2m 18.57 kB\u001B[22m\u001B[1m\u001B[22m\u001B[2m \u2502 gzip:   4.16 kB\u001B[22m\r\n\u001B[2mdist/\u001B[22m\u001B[36massets/FilePreviewRenderers-29KWxuEv.js  \u001B[39m\u001B[1m\u001B[2m 18.67 kB\u001B[22m\u001B[1m\u001B[22m\u001B[2m \u2502 gzip:   4.21 kB\u001B[22m\r\n\u001B[2mdist/\u001B[22m\u001B[36massets/vendor-icons-B7JND47y.js          \u001B[39m\u001B[1m\u001B[2m 24.84 kB\u001B[22m\u001B[1m\u001B[22m\u001B[2m \u2502 gzip:   8.35 kB\u001B[22m\r\n\u001B[2mdist/\u001B[22m\u001B[36massets/purify.es-BPuvlvQ_.js             \u001B[39m\u001B[1m\u001B[2m 29.05 kB\u001B[22m\u001B[1m\u001B[22m\u001B[2m \u2502 gzip:  11.09 kB\u001B[22m\r\n\u001B[2mdist/\u001B[22m\u001B[36massets/ModernAgentLibrary-BrpOq_ch.js    \u001B[39m\u001B[1m\u001B[2m 33.69 kB\u001B[22m\u001B[1m\u001B[22m\u001B[2m \u2502 gzip:   7.03 kB\u001B[22m\r\n\u001B[2mdist/\u001B[22m\u001B[36massets/GlobalChatModal-DgMY3h1O.js       \u001B[39m\u001B[1m\u001B[2m 40.99 kB\u001B[22m\u001B[1m\u001B[22m\u001B[2m \u2502 gzip:  10.00 kB\u001B[22m\r\n\u001B[2mdist/\u001B[22m\u001B[36massets/CustomToolBuilder-73DKqdWn.js     \u001B[39m\u001B[1m\u001B[2m 56.60 kB\u001B[22m\u001B[1m\u001B[22m\u001B[2m \u2502 gzip:  11.03 kB\u001B[22m\r\n\u001B[2mdist/\u001B[22m\u001B[36massets/useChatStreaming-CKmGp8ph.js      \u001B[39m\u001B[1m\u001B[2m 61.69 kB\u001B[22m\u001B[1m\u001B[22m\u001B[2m \u2502 gzip:  18.19 kB\u001B[22m\r\n\u001B[2mdist/\u001B[22m\u001B[36massets/SpatialWorkflowView-74OXIU_7.js   \u001B[39m\u001B[1m\u001B[2m 67.35 kB\u001B[22m\u001B[1m\u001B[22m\u001B[2m \u2502 gzip:  20.76 kB\u001B[22m\r\n\u001B[2mdist/\u001B[22m\u001B[36massets/KnowledgeView-xsIHO16b.js         \u001B[39m\u001B[1m\u001B[2m 73.78 kB\u001B[22m\u001B[1m\u001B[22m\u001B[2m \u2502 gzip:  14.31 kB\u001B[22m\r\n\u001B[2mdist/\u001B[22m\u001B[36massets/DeepAgentBuilder-DxJYD248.js      \u001B[39m\u001B[1m\u001B[2m 77.44 kB\u001B[22m\u001B[1m\u001B[22m\u001B[2m \u2502 gzip:  15.25 kB\u001B[22m\r\n\u001B[2mdist/\u001B[22m\u001B[36massets/NodeConfigPanel-BrAWPReM.js       \u001B[39m\u001B[1m\u001B[2m 78.38 kB\u001B[22m\u001B[1m\u001B[22m\u001B[2m \u2502 gzip:  16.52 kB\u001B[22m\r\n\u001B[2mdist/\u001B[22m\u001B[36massets/SettingsPage-C4iu0RaI.js          \u001B[39m\u001B[1m\u001B[2m 80.53 kB\u001B[22m\u001B[1m\u001B[22m\u001B[2m \u2502 gzip:  17.01 kB\u001B[22m\r\n\u001B[2mdist/\u001B[22m\u001B[36massets/index-DszkIDRN.js                 \u001B[39m\u001B[1m\u001B[2m 99.79 kB\u001B[22m\u001B[1m\u001B[22m\u001B[2m \u2502 gzip:  30.50 kB\u001B[22m\r\n\u001B[2mdist/\u001B[22m\u001B[36massets/index-BNii9TLA.js                 \u001B[39m\u001B[1m\u001B[2m101.26 kB\u001B[22m\u001B[1m\u001B[22m\u001B[2m \u2502 gzip:  32.56 kB\u001B[22m\r\n\u001B[2mdist/\u001B[22m\u001B[36massets/AgentLoadouts-R-rUUoYi.js         \u001B[39m\u001B[1m\u001B[2m120.74 kB\u001B[22m\u001B[1m\u001B[22m\u001B[2m \u2502 gzip:  22.19 kB\u001B[22m\r\n\u001B[2mdist/\u001B[22m\u001B[36massets/index.es-D0U7UT\n\u2026[truncated]",
+        "durationMs": 25668
+      },
+      {
+        "name": "vite-serves-home",
+        "kind": "http-probe",
+        "verificationMethod": "http-status",
+        "passed": true,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": null,
+        "outputSample": "HTTP 200\n\u003C!doctype html\u003E\r\n\u003Chtml lang=\u0022en\u0022\u003E\r\n\r\n\u003Chead\u003E\n  \u003Cscript type=\u0022module\u0022\u003Eimport { injectIntoGlobalHook } from \u0022/@react-refresh\u0022;\ninjectIntoGlobalHook(window);\nwindow.$RefreshReg$ = () =\u003E {};\nwindow.$RefreshSig$ = () =\u003E (type) =\u003E type;\u003C/script\u003E\n\n  \u003Cscript type=\u0022module\u0022 src=\u0022/@vite/client\u0022\u003E\u003C/script\u003E\n\r\n  \u003Cmeta charset=\u0022UTF-8\u0022 /\u003E\r\n  \u003Clink rel=\u0022icon\u0022 type=\u0022image/png\u0022 sizes=\u002232x32\u0022 href=\u0022/favicon.png\u0022 /\u003E\r\n  \u003Clink rel=\u0022apple-touch-icon\u0022 href=\u0022/GhostPeony.png\u0022 /\u003E\r\n  \u003Cmeta name=\u0022viewport\u0022 content=\u0022width=device-width, initial-scale=1.0\u0022 /\u003E\r\n  \u003Ctitle\u003ELangConfig - AI Workflow Studio\u003C/title\u003E\r\n\r\n  \u003C!-- Material Symbols Icons --\u003E\r\n  \u003Clink rel=\u0022stylesheet\u0022\r\n    href=\u0022https://fonts.googleapis.com/css2?family=Material\u002BSymbols\u002BOutlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200\u0022 /\u003E\r\n\r\n  \u003C!-- Inter Font --\u003E\r\n  \u003Clink rel=\u0022preconnect\u0022 href=\u0022https://fonts.googleapis.com\u0022\u003E\r\n  \u003Clink rel=\u0022preconnect\u0022 href=\u0022https://fonts.gstatic.com\u0022 crossorigin\u003E\r\n  \u003Clink href=\u0022https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800\u0026display=swap\u0022\r\n    rel=\u0022stylesheet\u0022\u003E\r\n\u003C/head\u003E\r\n\r\n\u003Cbody class=\u0022font-display bg-background-light dark:bg-background-dark text-gray-800 dark:text-gray-200\u0022\u003E\r\n  \u003Cdiv id=\u0022root\u0022\u003E\u003C/div\u003E\r\n  \u003Cscript type=\u0022module\u0022 src=\u0022/src/main.tsx\u0022\u003E\u003C/script\u003E\r\n\u003C/body\u003E\r\n\r\n\u003C/html\u003E\r\n\n--- server output ---\n\r\n\u003E langconfig@0.1.0 dev\r\n\u003E vite --port 1426\r\n\r\n\r\n  \u001B[32m\u001B[1mVITE\u001B[22m v7.3.6\u001B[39m  \u001B[2mready in \u001B[0m\u001B[1m603\u001B[22m\u001B[2m\u001B[0m ms\u001B[22m\r\n\r\n  \u001B[32m\u279C\u001B[39m  \u001B[1mLocal\u001B[22m:   \u001B[36mhttp://localhost:\u001B[1m1426\u001B[22m/\u001B[39m\r\n",
+        "durationMs": 2534
+      }
+    ],
+    "executions": [
+      {
+        "source": "vite-production-bundle",
+        "resolvedExecutable": "D:\\Program Files\\nodejs\\npx.CMD",
+        "args": [
+          "vite",
+          "build"
+        ],
+        "cwd": "D:\\work\\langconfig",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      },
+      {
+        "source": "vite-serves-home",
+        "resolvedExecutable": "D:\\Program Files\\nodejs\\npm.CMD",
+        "args": [
+          "run",
+          "dev",
+          "--",
+          "--port",
+          "1426"
+        ],
+        "cwd": "D:\\work\\langconfig",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      }
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "planHash": "91c934c92d6c06629dcf4cd82ef1774306708f249f7d8674581281356840c233",
+  "phase": "baseline",
+  "recordedAtUtc": "2026-11-04T07:50:08.7857412Z",
+  "retryCount": 0,
+  "resetBaseline": true,
+  "complete": true,
+  "result": {
+    "setupSucceeded": false,
+    "setupDurationMs": 472640,
+    "setupFailureOutput": "setup step 0 \u0027npx\u0027 failed (exit=1, timedOut=False)\r\nFailed to install browsers\r\nError: \r\n\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\r\n\u2551 An active lockfile is found at:                                             \u2551\r\n\u2551                                                                             \u2551\r\n\u2551   C:\\Users\\86189\\AppData\\Local\\ms-playwright\\__dirlock                      \u2551\r\n\u2551                                                                             \u2551\r\n\u2551 Either:                                                                     \u2551\r\n\u2551 - wait a few minutes if other Playwright is installing browsers in parallel \u2551\r\n\u2551 - remove lock manually with:                                                \u2551\r\n\u2551                                                                             \u2551\r\n\u2551     rm -R C:\\Users\\86189\\AppData\\Local\\ms-playwright\\__dirlock              \u2551\r\n\u2551                                                                             \u2551\r\n\u2551 \u003C3 Playwright Team                                                          \u2551\r\n\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D\r\n",
+    "assertions": [],
+    "executions": [
+      {
+        "source": "setup[0]",
+        "resolvedExecutable": "D:\\Program Files\\nodejs\\npx.CMD",
+        "args": [
+          "playwright",
+          "install",
+          "chromium"
+        ],
+        "cwd": "D:\\work\\langconfig",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      }
+    ]
+  }
+}

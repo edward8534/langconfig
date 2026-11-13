@@ -37,6 +37,7 @@ from langchain_community.document_loaders import (
     UnstructuredImageLoader,
     TextLoader,
     CSVLoader,
+    UnstructuredExcelLoader,
     UnstructuredMarkdownLoader,
     UnstructuredHTMLLoader,
 )
@@ -49,7 +50,7 @@ from services.llama_config import ensure_initialized, get_embedding_dimension
 logger = logging.getLogger(__name__)
 
 # Dedicated table name for context documents - separate from project-specific tables
-CONTEXT_DOCS_TABLE_NAME = "data_context_documents_embeddings"
+CONTEXT_DOCS_TABLE_NAME = "context_documents_embeddings"
 
 
 async def search_context_documents(query: str, top_k: int = 5) -> Dict[str, Any]:
@@ -218,7 +219,10 @@ class ContextDocumentIndexer:
         file_path_str = str(file_path)
 
         try:
-            if doc_type == DocumentType.PDF:
+            if file_path.suffix.lower() == ".xlsx":
+                return UnstructuredExcelLoader(file_path_str, mode="elements")
+
+            elif doc_type == DocumentType.PDF:
                 # UnstructuredPDFLoader provides:
                 # - OCR for scanned PDFs
                 # - Table extraction
